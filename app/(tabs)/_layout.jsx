@@ -7,13 +7,13 @@ const _layout = () => {
     <>
       <Stack>
         <Stack.Screen
-          name="sign-in"
+          name="home"
           options={{
             headerShown: false,
           }}
         />
         <Stack.Screen
-        name="sign-up"
+        name="create"
         options={{
           headerShown:false,
         }}/>

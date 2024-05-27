@@ -4,14 +4,13 @@ import * as Speech from 'expo-speech';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '../constants';
 import CustomButton from '../components/CustomButton';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
+import { useGlobalContext } from "../context/GlobalProvider";
 
 export default function App() {
-  const speak = () => {
-    const thingToSay = '1';
-    Speech.speak(thingToSay);
-  };
-
+  
+  const { loading, isLogged } = useGlobalContext();
+  if (!loading && isLogged) return <Redirect href="/home" />;
   return (
     <SafeAreaView className="bg-white h-full">
       <ScrollView contentContainerStyle={{height:"100%"}}>
@@ -27,7 +26,7 @@ export default function App() {
             className="w-48 h-48"
             resizeMode='contain'
             />
-            <CustomButton containerStyle="w-full h-14 mt-4 items-center justify-center bg-primary-100 border border-primary-200 rounded-xl" title="Get Started" titleStyle="font-bold text-lg text-primary" handleClick={()=>router.push("/sign-up")}/>
+            <CustomButton containerStyle="w-full h-14 mt-4 items-center justify-center bg-primary-100 border border-primary-200 rounded-xl" title="Get Started" titleStyle="font-bold text-lg text-primary" handleClick={()=>router.push("/sign-in")}/>
           </View>
         </View>
       </ScrollView>
