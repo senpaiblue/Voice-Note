@@ -14,15 +14,6 @@ import useAppWrite from "../../lib/useAppWrite";
 import { getAllPosts } from "../../lib/appwrite";
 
 const home = () => {
-  const data = [{ id: 1 }, { id: 2 }, { id: 3 }];
-  const notes = data.map((item) => (
-    <NotesCard
-      key={item.id} // Use item.id as a unique key
-      title="The job hard.."
-      description="Lorem ipsum dolor sit amet consectetur. Tempus tincidunt etiam eget elit id imperdiet et."
-      date="22.09.2022"
-    />
-  ));
   const { data: posts, refetch } = useAppWrite(getAllPosts);
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = async () => {
@@ -40,21 +31,19 @@ const home = () => {
             Faster Note Making
           </Text>
         </View>
-        <View className="w-full flex flex-col pt-8">
+        <View className="w-full flex flex-col">
           <View className=" py-4 justify-center items-center">
             <FlatList
-              data={[{ id: 1 }, { id: 2 }, { id: 3 }]}
+              data={posts}
               keyExtractor={(item) => item.$id}
               renderItem={({ item }) => (
                 <NotesCard
-                  title="The job hard.."
-                  desicription="Lorem ipsum dolor sit amet consectetur. Tempus tincidunt etiam eget elit id imperdiet et."
-                  date="22.09.2022"
+                note={item}
                 />
               )}
               ListHeaderComponent={() => (
                 <TouchableOpacity
-                  className="w-full"
+                  className="w-full pb-8"
                   onPress={() => router.replace("/create")}
                 >
                   <Add />

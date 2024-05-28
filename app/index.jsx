@@ -26,7 +26,7 @@ export default function App() {
             className="w-48 h-48"
             resizeMode='contain'
             />
-            <CustomButton containerStyle="w-full h-14 mt-4 items-center justify-center bg-primary-100 border border-primary-200 rounded-xl" title="Get Started" titleStyle="font-bold text-lg text-primary" handleClick={()=>router.push("/sign-in")}/>
+            <CustomButton containerStyle="w-full h-14 mt-4 items-center justify-center bg-primary border border-primary-200 rounded-xl" title="Get Started" titleStyle="font-bold text-lg text-white" handleClick={()=>router.push("/sign-in")}/>
           </View>
         </View>
       </ScrollView>
