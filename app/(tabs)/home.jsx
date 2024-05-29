@@ -1,6 +1,7 @@
 import {
   FlatList,
   RefreshControl,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -24,6 +25,7 @@ const home = () => {
   };
   return (
     <SafeAreaView className="h-full bg-white">
+      <ScrollView >
       <View className="w-full px-4 pt-5">
         <View className="w-full">
           <Text className="font-rbold text-2xl text-black">Voice Notes</Text>
@@ -31,31 +33,19 @@ const home = () => {
             Faster Note Making
           </Text>
         </View>
-        <View className="w-full flex flex-col">
-          <View className=" py-4 justify-center items-center">
-            <FlatList
-              data={posts}
-              keyExtractor={(item) => item.$id}
-              renderItem={({ item }) => (
-                <NotesCard
-                note={item}
-                />
-              )}
-              ListHeaderComponent={() => (
-                <TouchableOpacity
-                  className="w-full pb-8"
-                  onPress={() => router.replace("/create")}
-                >
-                  <Add />
-                </TouchableOpacity>
-              )}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-            />
-          </View>
+
+        <TouchableOpacity
+          className="w-full py-8"
+          onPress={() => router.replace("/create")}
+        >
+          <Add />
+        </TouchableOpacity>
+        <View className=" w-full flex  flex-row flex-wrap justify-between items-start">
+          {posts.length > 0 &&
+            posts.map((note) => <NotesCard key={note.$id} note={note} />)}
         </View>
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
