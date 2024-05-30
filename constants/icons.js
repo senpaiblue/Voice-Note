@@ -5,6 +5,7 @@ import microPhone from '../assets/icons/MicroPhone.png'
 import save from '../assets/icons/save.png'
 import visible from '../assets/icons/visible.png'
 import addImage from '../assets/icons/addCreate.png'
+import deleteNote from '../assets/icons/delete.png'
 
 export default{
   add,
@@ -13,5 +14,6 @@ export default{
   microPhone,
   save,
   visible,
-  addImage
+  addImage,
+  deleteNote
 }

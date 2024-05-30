@@ -7,13 +7,14 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { icons } from "../../constants";
 import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { createNote } from "../../lib/appwrite";
 import { useGlobalContext } from "../../context/GlobalProvider";
+import Voice from "@react-native-voice/voice";
 
 const create = () => {
   const { user } = useGlobalContext();
@@ -23,6 +24,61 @@ const create = () => {
     description: "",
     thumbnail: null,
   });
+
+  const [started, setstarted] = useState(false);
+  const [ended, setended] = useState(false);
+  const [recognizing, setrecognizing] = useState(false);
+  const [result, setresult] = useState([]);
+
+  useEffect(() => {
+    Voice.onSpeechStart = onSpeechStart;
+    Voice.onSpeechEnd = onSpeechEnd;
+    Voice.onSpeechResults = onSpeechResults;
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  const onSpeechStart = (e) => {
+    console.log(e);
+    setstarted(true);
+  };
+
+  const onSpeechEnd = (e) => {
+    console.log(e);
+    setended(true);
+  };
+
+  const onSpeechResults = (e) => {
+    console.log(e);
+    setresult(e.value);
+  };
+
+  const startRecognizing = async () => {
+    try {
+      await Voice.start("en-US");
+      setstarted(false);
+      setended(false);
+      setrecognizing(true);
+      setresult([]);
+    } catch (error) {
+      console.log("error is from start",error);
+    }
+  }
+
+  const stopRecognizing = async () => {
+    try {
+      await Voice.stop();
+      await Voice.destroy();
+      setstarted(false);
+      setended(false);
+      setrecognizing(false);
+      setresult([]);
+    } catch (error) {
+      console.log("error is from stop",error);
+    }
+  };
 
   const submit = async () => {
     if (!notes.title || !notes.description) {
@@ -41,7 +97,7 @@ const create = () => {
     } finally {
       setnotes({
         title: "",
-        description:"",
+        description: "",
         thumbnail: null,
       });
     }
@@ -65,6 +121,17 @@ const create = () => {
       }
     }
   };
+
+   const voiceItems = result.map((item) => ({
+     key: item,
+     content: item,
+   }));
+
+   const combinedText =
+     voiceItems.length > 0
+       ? voiceItems.map((item) => item.content).join("\n") + "\n"
+     : "";
+
   return (
     <SafeAreaView className="bg-white h-full">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
@@ -80,25 +147,30 @@ const create = () => {
                 <Text className="text-black font-rmedium text-xl">Back</Text>
               </View>
             </TouchableOpacity>
-            <View className=" items-center justify-center w-12 h-12 rounded-full border border-primary-200 bg-primary-100 shadow-md">
+            <TouchableOpacity
+              className=" items-center justify-center w-12 h-12 rounded-full border border-primary-200 bg-primary-100 shadow-md"
+              onPress={recognizing ? stopRecognizing : startRecognizing}
+            >
               <Image
                 source={icons.microPhone}
                 className="w-6 h-6"
                 resizeMode="contain"
               />
-            </View>
+            </TouchableOpacity>
           </View>
-          <View className="w-full px-5 py-8">
+
+          <View className="w-full px-5 mt-8 ">
             <TextInput
               className="w-full h-24 font-rbold text-4xl mb-4"
+              value={notes.title}
               placeholder="Enter title of note ..."
               placeholderTextColor={"#E4E7EC"}
               multiline
               onChangeText={(e) => setnotes({ ...notes, title: e })}
             />
-
             <TextInput
               className="w-full text-xl font-rmedium"
+              value={voiceItems.length > 0 ? combinedText : notes.description}
               placeholder="This is where your note will be. It’ll be housed here. You’ll save your note here. Type your memories here. Write down your thoughts."
               placeholderTextColor={"#E4E7EC"}
               multiline
@@ -125,13 +197,15 @@ const create = () => {
             )}
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={()=>submit()} className="absolute bottom-6 right-6">
-         
-            <View className="w-16 h-16 items-center justify-center bg-black-200 rounded-full relative">
-              <Image
-                source={icons.save}
-                className="w-8 h-8 absolute inset-0 m-auto "
-              />
+        <TouchableOpacity
+          onPress={() => submit()}
+          className="absolute bottom-6 right-6"
+        >
+          <View className="w-16 h-16 items-center justify-center bg-black-200 rounded-full relative">
+            <Image
+              source={icons.save}
+              className="w-8 h-8 absolute inset-0 m-auto "
+            />
           </View>
         </TouchableOpacity>
       </ScrollView>

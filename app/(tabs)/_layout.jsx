@@ -17,6 +17,12 @@ const _layout = () => {
         options={{
           headerShown:false,
         }}/>
+        
+        <Stack.Screen
+        name="noteInfo"
+        options={{
+          headerShown:false,
+        }}/>
       </Stack>
       <StatusBar backgroundColor="#161622" style="light" />
     </>
